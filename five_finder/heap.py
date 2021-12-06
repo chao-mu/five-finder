@@ -7,28 +7,37 @@ class Heap:
     def less_than(self, a, b):
         return a < b
 
-    def left_child_idx(self, idx):
-        return idx * 2 + 1
+    def parent(self, child_idx):
+        idx = (child_idx - 1) // 2
+        if idx < 0:
+            return None, None
 
-    def left_child(self, idx):
-        idx = self.left_child_idx(idx)
         return idx, self.items[idx]
 
-    def right_child(self, idx):
-        idx = self.left_child_idx(idx) + 1
+    def left_child(self, parent_idx):
+        idx = parent_idx * 2 + 1
+        return idx, self.items[idx]
+
+    def right_child(self, parent_idx):
+        idx = parent_idx * 2 + 2
         return idx, self.items[idx]
 
     def has_child(self, idx):
-        return self.items[self.left_child_idx(idx)] is not None
+        if idx >= self.size:
+            return False
 
-    def parent_idx(self, idx):
-        return idx // 2
+        _, val = self.left_child(idx)
+        return val is not None
 
     def has_parent(self, idx):
-        return self.items[self.parent_idx(idx)] is not None
+        if idx == 0:
+            return False
+
+        _, val = self.parent(idx)
+        return val is not None
 
     def ensure_space(self):
-        diff = self.size * 2 - len(self.items)
+        diff = self.size * 2 + 1 - len(self.items)
         if diff > 0:
             self.items += [None] * diff
 
@@ -63,8 +72,8 @@ class Heap:
 
     def swim(self, idx):
         while self.has_parent(idx):
-            parent_idx = self.parent_idx(idx)
-            if not self.less_than(self.items[idx], self.items[parent_idx]):
+            parent_idx, parent_v = self.parent(idx)
+            if self.less_than(parent_v, self.items[idx]):
                 break
 
             self.swap(parent_idx, idx)
@@ -79,8 +88,11 @@ class Heap:
             else:
                 smallest_idx = left_idx
 
-            if self.less_than(self.items[idx], self.items[smallest_idx]):
+            smallest_v = self.items[smallest_idx]
+
+            if self.less_than(self.items[idx], smallest_v):
                 break
 
             self.swap(idx, smallest_idx)
             idx = smallest_idx
+
