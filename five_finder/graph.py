@@ -2,7 +2,6 @@ from collections import deque
 
 def generate_paths(start, target, q, operations):
     q.put([(start, "START")])
-    #q.put(start)
 
     paths = {}
     exits = set()

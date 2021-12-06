@@ -23,9 +23,8 @@ def main():
     start = args.start
     target = args.target
 
-    less_than = lambda a, b: abs(a[-1][0] - target) < abs(b[-1][0] - target)
     #less_than = lambda a, b: abs(a - target) < abs(b - target)
-    q = ChaosHeap(less_than=less_than)
+    q = ChaosHeap(target=target)
 
     ops = [mod, add, div, multi, sub]
     gen = generate_paths(start=start, target=target, q=q, operations=ops)
@@ -35,13 +34,13 @@ def main():
         print_paths(paths)
 
     if args.draw:
-        draw(paths)
+        draw(start, target, paths)
 
 def print_paths(paths):
     for path in paths:
         print(path)
 
-def draw(paths):
+def draw(start, target, paths):
     g = nx.DiGraph()
 
     labels = {}
@@ -52,11 +51,21 @@ def draw(paths):
             labels[edge] = node[1]
             g.add_edge(*edge)
 
+    node_colors = []
+    for node in g:
+        if node in [start, target]:
+            node_colors.append("#55CDFC")
+        else:
+            node_colors.append("#F7A8B8")
+
+
     pos = nx.spring_layout(g)
-    plt.figure()
-    nx.draw(g, pos, node_color="pink", labels={node: node for node in g.nodes()})
+    fig = plt.figure()
+    nx.draw(g, pos, edge_color="white", node_color=node_colors, labels={node: node for node in g.nodes()})
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, font_color="black")
-    plt.axis("off")
+
+    plt.axis('off')
+    fig.set_facecolor('#121212')
     plt.show()
 
 def mod(a, b):
