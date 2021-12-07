@@ -23,11 +23,11 @@ def main():
     start = args.start
     target = args.target
 
-    #less_than = lambda a, b: abs(a - target) < abs(b - target)
     q = ChaosHeap(target=target)
 
     ops = [mod, add, div, multi, sub]
-    gen = generate_paths(start=start, target=target, q=q, operations=ops)
+    ban = set([1, 2])
+    gen = generate_paths(start=start, target=target, q=q, operations=ops, ban=ban)
     paths = [next(gen) for _ in range(args.count)]
 
     if args.print:

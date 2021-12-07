@@ -1,7 +1,10 @@
 from collections import deque
 
-def generate_paths(start, target, q, operations):
+def generate_paths(start, target, q, operations, ban):
     q.put([(start, "START")])
+
+    ban = set(ban)
+    ban.add(0)
 
     paths = {}
     exits = set()
@@ -16,7 +19,7 @@ def generate_paths(start, target, q, operations):
             for op in operations:
                 new_path = list(path)
                 res, symbol = op(a, b)
-                if res is None or res == 0:
+                if res is None or res in ban:
                     continue
 
                 if res in seen:
