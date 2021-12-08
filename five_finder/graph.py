@@ -8,13 +8,11 @@ def generate_paths(start, target, q, operations, ban):
 
     paths = {}
     exits = set()
-    seen = set()
     while not q.empty():
         path = q.get()
         a = path[-1][0]
 
-        seen.add(a)
-
+        seen = set(n[0] for n in path)
         for b in seen:
             for op in operations:
                 new_path = list(path)
