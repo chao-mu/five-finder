@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import random
 
 from five_finder.structs import ChaosHeap
 from five_finder.graph import generate_paths
@@ -18,6 +19,7 @@ def main():
     parser.add_argument("--count", type=int, default=5, help="Number of paths to find")
     parser.add_argument("--print", action="store_true", help="Print path to STDOUT")
     parser.add_argument("--draw", action="store_true", help="Render graph of paths")
+    parser.add_argument("--sample", type=int, default=None, help="Subset of count")
     args = parser.parse_args()
 
     start = args.start
@@ -26,9 +28,12 @@ def main():
     q = ChaosHeap(target=target)
 
     ops = [mod, add, div, multi, sub]
-    ban = set([1, 2])
+    ban = set()
     gen = generate_paths(start=start, target=target, q=q, operations=ops, ban=ban)
     paths = [next(gen) for _ in range(args.count)]
+
+    if args.sample is not None:
+        paths = random.sample(paths, args.sample)
 
     if args.print:
         print_paths(paths)
